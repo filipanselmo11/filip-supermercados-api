@@ -30,5 +30,5 @@ async def obter_produto(id_produto:int, db:Session=Depends(get_db)) -> ProdutoRe
 def buscar_produto_id(id_produto:int, db:Session) -> Produto:
     produto = db.query(Produto).get(id_produto)
     if produto is None:
-        raise NotFound("Produto não econtrado")
+        raise NotFound("Produto não encontrado")
     return produto
