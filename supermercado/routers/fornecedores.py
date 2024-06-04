@@ -25,6 +25,23 @@ async def obter_fornecedor(id_fornecedor:int, db:Session=Depends(get_db)) -> For
     fornecedor = buscar_fornecedor_id(id_fornecedor, db)
     return fornecedor
 
+@router.put("/{id_fornecedor}", response_model=FornecedorResponse, status_code=200)
+async def atualizar_fornecedor(id_fornecedor:int, fornecedor_request:FornecedorRequest, db:Session=Depends(get_db))->FornecedorResponse:
+    fornecedor = buscar_fornecedor_id(id_fornecedor, db)
+    fornecedor.nome = fornecedor_request.nome
+    fornecedor.email = fornecedor_request.email
+    fornecedor.telefone = fornecedor_request.telefone
+    db.add(fornecedor)
+    db.commit()
+    db.refresh(fornecedor)
+    return fornecedor
+
+@router.delete("/{id_fornecedor}", status_code=204)
+async def deletar_fornecedor(id_fornecedor:int, db:Session=Depends(get_db))->None:
+    fornecedor = buscar_fornecedor_id(id_fornecedor, db)
+    db.delete(fornecedor)
+    db.commit()
+
 
 def buscar_fornecedor_id(id_fornecedor:int, db:Session) -> Fornecedor:
     fornecedor = db.query(Fornecedor).get(id_fornecedor)

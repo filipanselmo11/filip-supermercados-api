@@ -26,7 +26,25 @@ async def listar_produtos(db:Session=Depends(get_db)) -> List[ProdutoResponse]:
 async def obter_produto(id_produto:int, db:Session=Depends(get_db)) -> ProdutoResponse:
     produto = buscar_produto_id(id_produto, db)
     return produto
-    
+
+@router.put("/{id_produto}", response_model=ProdutoResponse, status_code=200)
+async def autalizar_produto(id_produto:int, produto_request:ProdutoRequest, db:Session=Depends(get_db))->ProdutoResponse:
+    validar_fornecedor(produto_request.fornecedor_id, db)
+    produto = buscar_produto_id(id_produto, db)
+    produto.nome = produto_request.nome
+    produto.disponivel = produto_request.disponivel
+    produto.quantidade = produto_request.quantidade
+    produto.fornecedor_id = produto_request.fornecedor_id
+    db.add(produto)
+    db.commit()
+    db.refresh(produto)
+    return produto
+
+@router.delete("/{id_produto}", status_code=204)
+async def deletar_produto(id_produto:int, db:Session=Depends(get_db))->None:
+    produto = buscar_produto_id(id_produto, db)
+    db.delete(produto)
+    db.commit()
 
 
 def buscar_produto_id(id_produto:int, db:Session) -> Produto:
