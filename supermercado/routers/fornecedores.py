@@ -17,7 +17,7 @@ async def criar_fornecedor(fornecedor_request:FornecedorRequest, db:Session=Depe
     return fornecedor
 
 @router.get("/", response_model=List[FornecedorResponse], status_code=200)
-async def listar_produtos(db:Session=Depends(get_db)) -> List[FornecedorResponse]:
+async def listar_fornecedores(db:Session=Depends(get_db)) -> List[FornecedorResponse]:
     return db.query(Fornecedor).all()
 
 @router.get("/{id_fornecedor}", response_model=FornecedorResponse, status_code=200)
